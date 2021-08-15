@@ -1,10 +1,11 @@
-const title = "React";
-function App() {
-	return (
-		<div>
-			<h1>Hello World from {title}</h1>
-		</div>
-	);
-}
+const names = ["Chung", "Mary", "John"];
+
+const App = () => (
+	<div>
+		<h1>Hello{names.map((name) => ` ${name}`)}!</h1>
+		<label htmlFor='search'>Search: </label>
+		<input id='search' type='text' />
+	</div>
+);
 
 export default App;
