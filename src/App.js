@@ -22,22 +22,32 @@ const list = [
 const App = () => (
 	<div>
 		<h1>My Hacker Stories</h1>
+		<Search />
+		<hr />
+		<List />
+	</div>
+);
+
+const List = () => (
+	<ul>
+		{/* make list items */}
+		{list.map((el) => (
+			<li key={el.objectID}>
+				<span>
+					<a href={el.url}>{el.title}</a>
+				</span>
+				<span>{el.author}</span>
+				<span>{el.num_comments}</span>
+				<span>{el.points}</span>
+			</li>
+		))}
+	</ul>
+);
+
+const Search = () => (
+	<div>
 		<label htmlFor='search'>Search: </label>
 		<input id='search' type='text' />
-		<hr />
-		<ul>
-			{/* make list items */}
-			{list.map((el) => (
-				<li key={el.objectID}>
-					<span>
-						<a href={el.url}>{el.title}</a>
-					</span>
-					<span>{el.author}</span>
-					<span>{el.num_comments}</span>
-					<span>{el.points}</span>
-				</li>
-			))}
-		</ul>
 	</div>
 );
 
