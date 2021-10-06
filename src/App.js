@@ -1,73 +1,141 @@
 import * as React from "react";
+import InputWithLabel from "./InputWithLabel";
+import List from "./List";
+
+const initialStories = [
+  {
+    title: "React",
+    url: "https://reactjs.org/",
+    author: "Jordan Walke",
+    num_comments: 3,
+    points: 4,
+    objectID: 0,
+  },
+  {
+    title: "Redux",
+    url: "https://redux.js.org/",
+    author: "Dan Abramov, Andrew Clark",
+    num_comments: 2,
+    points: 5,
+    objectID: 1,
+  },
+];
+
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = React.useState(
+    JSON.parse(localStorage.getItem(key)) || initialState
+  );
+  React.useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [value, key]);
+
+  return [value, setValue];
+};
+
+const getAsyncStories = () =>
+  new Promise((resolve, reject) =>
+    setTimeout(() => resolve({data: {stories: initialStories}}), 2000)
+  );
+
+const [
+  removeStory,
+  storiesFetchInit,
+  storiesFetchSuccess,
+  storiesFetchFailure,
+] = [
+  "REMOVE_STORY",
+  "STORIES_FETCH_INIT",
+  "STORIES_FETCH_SUCCESS",
+  "STORIES_FETCH_FAILURE",
+];
+
+const storiesReducer = (state, action) => {
+  switch (action.type) {
+    case storiesFetchInit:
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case storiesFetchSuccess:
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case storiesFetchFailure:
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    case removeStory:
+      return {
+        ...state,
+        data: state.data.filter(
+          (story) => action.payload.objectID !== story.objectID
+        ),
+      };
+    default:
+      throw new Error();
+  }
+};
 
 const App = () => {
-  const stories = [
-    {
-      title: "React",
-      url: "https://reactjs.org/",
-      author: "Jordan Walke",
-      num_comments: 3,
-      points: 4,
-      objectID: 0,
-    },
-    {
-      title: "Redux",
-      url: "https://redux.js.org/",
-      author: "Dan Abramov, Andrew Clark",
-      num_comments: 2,
-      points: 5,
-      objectID: 1,
-    },
-  ];
+  const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, {
+    data: [],
+    isLoading: false,
+    isError: false,
+  });
 
-  const [searchTerm, setSearchTerm] = React.useState("");
+  React.useEffect(() => {
+    dispatchStories({type: storiesFetchInit});
+    getAsyncStories()
+      .then((result) => {
+        dispatchStories({
+          type: storiesFetchSuccess,
+          payload: result.data.stories,
+        });
+      })
+      .catch(() => dispatchStories({type: storiesFetchFailure}));
+  }, []);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const searchedStories = stories.filter((story) =>
+  const handleRemoveStory = (item) => {
+    dispatchStories({
+      type: removeStory,
+      payload: item,
+    });
+  };
+
+  const searchedStories = stories.data.filter((story) =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <Search search={searchTerm} onSearch={handleSearch} />
+      <InputWithLabel
+        id='search'
+        value={searchTerm}
+        isFocused
+        onInputChange={handleSearch}>
+        <strong>Search:</strong>
+      </InputWithLabel>
       <hr />
-      <List list={searchedStories} />
+      {stories.isError && <p>Something went wrong ...</p>}
+      {stories.isLoading ? (
+        <p>Loading ...</p>
+      ) : (
+        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      )}
     </div>
   );
 };
-
-const Search = ({search, onSearch}) => (
-  <div>
-    <label htmlFor='search'>Search: </label>
-    <input id='search' type='text' value={search} onChange={onSearch} />
-    <p>
-      Searching for <strong>{search}</strong>.
-    </p>
-  </div>
-);
-
-const List = ({list}) => (
-  <ul>
-    {/* make list items */}
-    {list.map((el) => (
-      <Item key={el.objectID} item={el} />
-    ))}
-  </ul>
-);
-
-const Item = ({item}) => (
-  <li>
-    <span>
-      <a href={item.url}>{item.title}</a>
-    </span>
-    <span>{item.author}</span>
-    <span>{item.num_comments}</span>
-    <span>{item.points}</span>
-  </li>
-);
 
 export default App;
