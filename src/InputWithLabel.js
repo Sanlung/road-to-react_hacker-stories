@@ -27,9 +27,6 @@ const InputWithLabel = ({
         value={value}
         onChange={onInputChange}
       />
-      <p>
-        Searching for <strong>{value}</strong>.
-      </p>
     </>
   );
 };
