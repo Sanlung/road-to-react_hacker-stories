@@ -85,24 +85,26 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = (e) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
   };
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <InputWithLabel
-        id='search'
-        value={searchTerm}
-        isFocused
-        onInputChange={handleSearchInput}>
-        <strong>Search:</strong>
-      </InputWithLabel>
-      &nbsp;
-      <button type='button' disabled={!searchTerm} onClick={handleSearchSubmit}>
-        Submit
-      </button>
+      <form onSubmit={handleSearchSubmit}>
+        <InputWithLabel
+          id='search'
+          value={searchTerm}
+          isFocused
+          onInputChange={handleSearchInput}>
+          <strong>Search:</strong>
+        </InputWithLabel>
+        &nbsp;
+        <button type='submit' disabled={!searchTerm}>
+          Submit
+        </button>
+      </form>
       <hr />
       {stories.isError && <p>Something went wrong ...</p>}
       {stories.isLoading ? (
