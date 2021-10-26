@@ -1,5 +1,6 @@
 import * as React from "react";
-import InputWithLabel from "./InputWithLabel";
+import axios from "axios";
+import SearchForm from "./SearchForm";
 import List from "./List";
 
 const useSemiPersistentState = (key, initialState) => {
@@ -57,17 +58,18 @@ const App = () => {
     isError: false,
   });
 
-  const handleFetchStories = React.useCallback(() => {
+  const handleFetchStories = React.useCallback(async () => {
     dispatchStories({type: "STORIES_FETCH_INIT"});
-    fetch(url)
-      .then((response) => response.json())
-      .then((result) => {
-        dispatchStories({
-          type: "STORIES_FETCH_SUCCESS",
-          payload: result.hits,
-        });
-      })
-      .catch(() => dispatchStories({type: "STORIES_FETCH_FAILURE"}));
+
+    const result = await axios.get(url);
+    try {
+      dispatchStories({
+        type: "STORIES_FETCH_SUCCESS",
+        payload: result.data.hits,
+      });
+    } catch {
+      dispatchStories({type: "STORIES_FETCH_FAILURE"});
+    }
   }, [url]);
 
   React.useEffect(() => {
@@ -87,24 +89,17 @@ const App = () => {
 
   const handleSearchSubmit = (e) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
+    e.preventDefault();
   };
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <form onSubmit={handleSearchSubmit}>
-        <InputWithLabel
-          id='search'
-          value={searchTerm}
-          isFocused
-          onInputChange={handleSearchInput}>
-          <strong>Search:</strong>
-        </InputWithLabel>
-        &nbsp;
-        <button type='submit' disabled={!searchTerm}>
-          Submit
-        </button>
-      </form>
+      <SearchForm
+        searchTerm={searchTerm}
+        onSearchInput={handleSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+      />
       <hr />
       {stories.isError && <p>Something went wrong ...</p>}
       {stories.isLoading ? (
