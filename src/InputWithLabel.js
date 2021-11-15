@@ -1,20 +1,19 @@
-import * as React from "react";
-import styled from "styled-components";
+import React from "react";
 
-const StyledLabel = styled.label`
-  border-top: 1px solid #171212;
-  border-left: 1px solid #171212;
-  padding: 0 5px;
-  font-size: 24px;
-`;
+// const StyledLabel = styled.label`
+//   border-top: 1px solid #171212;
+//   border-left: 1px solid #171212;
+//   padding: 0 5px;
+//   font-size: 24px;
+// `;
 
-const StyledInput = styled.input`
-  border: none;
-  border-bottom: 1px solid #171212;
-  background-color: transparent;
-  font-size: 24px;
-  margin-right: 5px;
-`;
+// const StyledInput = styled.input`
+//   border: none;
+//   border-bottom: 1px solid #171212;
+//   background-color: transparent;
+//   font-size: 24px;
+//   margin-right: 5px;
+// `;
 
 const InputWithLabel = ({
   id,
@@ -34,8 +33,11 @@ const InputWithLabel = ({
 
   return (
     <>
-      <StyledLabel htmlFor={id}>{children}</StyledLabel>
-      <StyledInput
+      <label className='label' htmlFor={id}>
+        {children}
+      </label>
+      <input
+        className='input'
         ref={inputRef}
         id={id}
         type={type}

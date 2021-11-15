@@ -1,22 +1,24 @@
 import * as React from "react";
-import styled from "styled-components";
 import axios from "axios";
 import SearchForm from "./SearchForm";
 import List from "./List";
+import "./App.scss"
 
-const StyledContainer = styled.div`
-  height: 100vw;
-  padding: 20px;
-  background: #83a4d4;
-  background: linear-gradient(to left, #b6fbff, #83a4d4);
-  color: #171212;
-`;
+// const StyledContainer = styled.div`
+//   height: 100vw;
+//   padding: 20px;
+//   background: #83a4d4;
+//   background: linear-gradient(to left, #b6fbff, #83a4d4);
+//   color: #171212;
+// `;
 
-const StyledHeadlinePrimary = styled.h1`
-  font-size: 48px;
-  font-weight: 300;
-  letter-spacing: 2px;
-`;
+// const StyledHeadlinePrimary = styled.h1`
+//   font-size: 48px;
+//   font-weight: 300;
+//   letter-spacing: 2px;
+// `;
+
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const useSemiPersistentState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -62,7 +64,6 @@ const storiesReducer = (state, action) => {
   }
 };
 
-const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
@@ -108,8 +109,8 @@ const App = () => {
   };
 
   return (
-    <StyledContainer>
-      <StyledHeadlinePrimary>My Hacker Stories</StyledHeadlinePrimary>
+    <div className="container">
+      <h1 className="headline-primary">My Hacker Stories</h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
@@ -121,7 +122,7 @@ const App = () => {
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-    </StyledContainer>
+    </div>
   );
 };
 
