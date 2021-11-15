@@ -19,8 +19,9 @@ import React from "react";
 type InputWithLabelProps = {
   id: string;
   value: string;
+  type?: string;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  isFocused: boolean;
+  isFocused?: boolean;
   children: React.ReactNode;
 };
 

@@ -111,9 +111,8 @@ const App = () => {
   const handleFetchStories = React.useCallback(async () => {
     dispatchStories({type: "STORIES_FETCH_INIT"});
 
-    const result = await axios.get(url);
+    const result: {data: {hits: Stories}} = await axios.get(url);
     try {
-      console.log(result);
       dispatchStories({
         type: "STORIES_FETCH_SUCCESS",
         payload: result.data.hits,

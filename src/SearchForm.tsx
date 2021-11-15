@@ -1,4 +1,3 @@
-import * as React from "react";
 // import styled from "styled-components";
 import InputWithLabel from "./InputWithLabel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

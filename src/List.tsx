@@ -1,4 +1,3 @@
-import React from "react";
 import Item, {Story} from "./Item";
 
 type Stories = Array<Story>;
