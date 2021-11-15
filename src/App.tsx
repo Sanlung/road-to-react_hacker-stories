@@ -1,35 +1,72 @@
 import * as React from "react";
-import styled from "styled-components";
+// import styled from "styled-components";
 import axios from "axios";
 import SearchForm from "./SearchForm";
-import List from "./List";
+import List, {Stories} from "./List";
+import {Story} from "./Item";
+import "./App.scss";
 
-const StyledContainer = styled.div`
-  height: 100vw;
-  padding: 20px;
-  background: #83a4d4;
-  background: linear-gradient(to left, #b6fbff, #83a4d4);
-  color: #171212;
-`;
+// const StyledContainer = styled.div`
+//   height: 100vw;
+//   padding: 20px;
+//   background: #83a4d4;
+//   background: linear-gradient(to left, #b6fbff, #83a4d4);
+//   color: #171212;
+// `;
 
-const StyledHeadlinePrimary = styled.h1`
-  font-size: 48px;
-  font-weight: 300;
-  letter-spacing: 2px;
-`;
+// const StyledHeadlinePrimary = styled.h1`
+//   font-size: 48px;
+//   font-weight: 300;
+//   letter-spacing: 2px;
+// `;
 
-const useSemiPersistentState = (key, initialState) => {
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
+
+const useSemiPersistentState = (
+  key: string,
+  initialState: string
+): [string, (newValue: string) => void] => {
   const [value, setValue] = React.useState(
-    JSON.parse(localStorage.getItem(key)) || initialState
+    localStorage.getItem(key) || initialState
   );
   React.useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, value);
   }, [value, key]);
 
   return [value, setValue];
 };
 
-const storiesReducer = (state, action) => {
+type StoriesState = {
+  data: Stories;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+interface StoriesFetchInitAction {
+  type: "STORIES_FETCH_INIT";
+}
+
+interface StoriesFetchSuccessAction {
+  type: "STORIES_FETCH_SUCCESS";
+  payload: Stories;
+}
+
+interface StoriesFetchFailureAction {
+  type: "STORIES_FETCH_FAILURE";
+}
+
+interface StoriesRemoveAction {
+  type: "REMOVE_STORY";
+  payload: Story;
+}
+
+type StoriesAction =
+  | StoriesFetchInitAction
+  | StoriesFetchSuccessAction
+  | StoriesFetchFailureAction
+  | StoriesRemoveAction;
+
+const storiesReducer = (state: StoriesState, action: StoriesAction) => {
   switch (action.type) {
     case "STORIES_FETCH_INIT":
       return {
@@ -54,15 +91,13 @@ const storiesReducer = (state, action) => {
       return {
         ...state,
         data: state.data.filter(
-          (story) => action.payload.objectID !== story.objectID
+          (story: Story) => action.payload.objectID !== story.objectID
         ),
       };
     default:
       throw new Error();
   }
 };
-
-const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
@@ -78,6 +113,7 @@ const App = () => {
 
     const result = await axios.get(url);
     try {
+      console.log(result);
       dispatchStories({
         type: "STORIES_FETCH_SUCCESS",
         payload: result.data.hits,
@@ -91,25 +127,25 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory = (item) => {
+  const handleRemoveStory = (item: Story) => {
     dispatchStories({
       type: "REMOVE_STORY",
       payload: item,
     });
   };
 
-  const handleSearchInput = (e) => {
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
     e.preventDefault();
   };
 
   return (
-    <StyledContainer>
-      <StyledHeadlinePrimary>My Hacker Stories</StyledHeadlinePrimary>
+    <div className='container'>
+      <h1 className='headline-primary'>My Hacker Stories</h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
@@ -121,7 +157,7 @@ const App = () => {
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-    </StyledContainer>
+    </div>
   );
 };
 
