@@ -2,7 +2,7 @@ import * as React from "react";
 import axios from "axios";
 import SearchForm from "./SearchForm";
 import List from "./List";
-import "./App.scss"
+import "./App.scss";
 
 // const StyledContainer = styled.div`
 //   height: 100vw;
@@ -64,7 +64,6 @@ const storiesReducer = (state, action) => {
   }
 };
 
-
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
   const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
@@ -109,8 +108,8 @@ const App = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="headline-primary">My Hacker Stories</h1>
+    <div className='container'>
+      <h1 className='headline-primary'>My Hacker Stories</h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
@@ -127,3 +126,4 @@ const App = () => {
 };
 
 export default App;
+export {storiesReducer};
