@@ -5,6 +5,13 @@ import SearchForm from "./SearchForm";
 import InputWithLabel from "./InputWithLabel";
 import List from "./List";
 import Item from "./Item";
+import axios from "axios";
+
+/*
+Declare mock test data
+*/
+
+jest.mock("axios");
 
 const storyOne = {
   title: "React",
@@ -18,7 +25,7 @@ const storyOne = {
 const storyTwo = {
   title: "Redux",
   url: "https://redux.js.org/",
-  author: "Dan Abramvo, Andrew Clarke",
+  author: "Dan Abramvo, Andrew Clark",
   num_comments: 2,
   points: 5,
   objectID: 1,
@@ -26,6 +33,11 @@ const storyTwo = {
 
 const stories = [storyOne, storyTwo];
 
+/*
+Test suites
+*/
+
+// For storiesReducer in App component
 // describe("storiesReducter", () => {
 //   test("remove a story from all stories", () => {
 //     const action = {type: "REMOVE_STORY", payload: storyOne};
@@ -72,6 +84,7 @@ const stories = [storyOne, storyTwo];
 //   });
 // });
 
+// // For Item component
 // describe("Item", () => {
 //   test("renders all properties", () => {
 //     render(<Item item={storyOne} />);
@@ -98,43 +111,50 @@ const stories = [storyOne, storyTwo];
 //   });
 // });
 
-// describe("SearchForm", () => {
-//   const searchFormProps = {
-//     searchTerm: "React",
-//     onSearchInput: jest.fn(),
-//     onSearchSubmit: jest.fn(),
-//   };
-//   test("renders the input field with its value", () => {
-//     render(<SearchForm {...searchFormProps} />);
+// For SearchForm component
+describe("SearchForm", () => {
+  const searchFormProps = {
+    searchTerm: "React",
+    onSearchInput: jest.fn(),
+    onSearchSubmit: jest.fn(),
+  };
+  //   test("renders the input field with its value", () => {
+  //     render(<SearchForm {...searchFormProps} />);
+  //     screen.getByRole("");
+  //     expect(screen.getByDisplayValue("React")).toBeInTheDocument();
+  //   });
 
-//     expect(screen.getByDisplayValue("React")).toBeInTheDocument();
-//   });
+  //   test("renders the correct label", () => {
+  //     render(<SearchForm {...searchFormProps} />);
 
-//   test("renders the correct label", () => {
-//     render(<SearchForm {...searchFormProps} />);
+  //     expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+  //   });
 
-//     expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
-//   });
+  //   test("calls onSearchInput on search field change", () => {
+  //     render(<SearchForm {...searchFormProps} />);
 
-//   test("calls onSearchInput on search field change", () => {
-//     render(<SearchForm {...searchFormProps} />);
+  //     fireEvent.change(screen.getByDisplayValue("React"), {
+  //       target: {value: "Redux"},
+  //     });
 
-//     fireEvent.change(screen.getByDisplayValue("React"), {
-//       target: {value: "Redux"},
-//     });
+  //     expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
+  //   });
 
-//     expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
-//   });
+  //   test("calls onSearchSubmit on submit button click", () => {
+  //     render(<SearchForm {...searchFormProps} />);
 
-//   test("calls onSearchSubmit on submit button click", () => {
-//     render(<SearchForm {...searchFormProps} />);
+  //     fireEvent.submit(screen.getByRole("button"));
 
-//     fireEvent.submit(screen.getByRole("button"));
+  //     expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
+  //   });
 
-//     expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
-//   });
-// });
+  test("renders snapshot", () => {
+    const {container} = render(<SearchForm {...searchFormProps} />);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});
 
+// // For List component
 // describe("List", () => {
 //   const listProps = {
 //     list: stories,
@@ -164,40 +184,139 @@ const stories = [storyOne, storyTwo];
 //   });
 // });
 
-describe("InputWithLabel", () => {
-  const inputWithLabelProps = {
-    id: "search",
-    value: "React",
-    isFocused: true,
-    children: "Search:",
-    onInputChange: jest.fn(),
-  };
+// // For InputWithLabel component
+// describe("InputWithLabel", () => {
+//   const inputWithLabelProps = {
+//     id: "search",
+//     value: "React",
+//     isFocused: true,
+//     children: "Search:",
+//     onInputChange: jest.fn(),
+//   };
 
-  test("renders the input field with its value", () => {
-    render(<InputWithLabel {...inputWithLabelProps} />);
+//   test("renders the input field with its value", () => {
+//     render(<InputWithLabel {...inputWithLabelProps} />);
 
-    expect(screen.getByDisplayValue("React")).toBeInTheDocument();
-  });
+//     expect(screen.getByDisplayValue("React")).toBeInTheDocument();
+//   });
 
-  // test("renders the correct label", () => {
-  //   render(<InputWithLabel {...inputWithLabelProps} />);
+//   test("renders the correct label", () => {
+//     render(<InputWithLabel {...inputWithLabelProps} />);
 
-  //   expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
-  // });
+//     expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+//   });
 
-  test("has a focused input field", () => {
-    render(<InputWithLabel {...inputWithLabelProps} />);
+//   test("has a focused input field", () => {
+//     render(<InputWithLabel {...inputWithLabelProps} />);
 
-    expect(screen.getByDisplayValue("React").focus).toBeTruthy();
-  });
+//     expect(screen.getByDisplayValue("React").focus).toBeTruthy();
+//   });
 
-  // test("calls onInputChange on search field change", () => {
-  //   render(<InputWithLabel {...inputWithLabelProps} />);
+//   test("calls onInputChange on search field change", () => {
+//     render(<InputWithLabel {...inputWithLabelProps} />);
 
-  //   fireEvent.change(screen.getByDisplayValue("React"), {
-  //     target: {value: "Redux"},
-  //   });
+//     fireEvent.change(screen.getByDisplayValue("React"), {
+//       target: {value: "Redux"},
+//     });
 
-  //   expect(inputWithLabelProps.onInputChange).toHaveBeenCalledTimes(1);
-  // });
-});
+//     expect(inputWithLabelProps.onInputChange).toHaveBeenCalledTimes(1);
+//   });
+// });
+
+// For App and REST API
+// describe("App", () => {
+// test("succeeds fetching data", async () => {
+//   const promise = Promise.resolve({
+//     data: {
+//       hits: stories,
+//     },
+//   });
+//   axios.get.mockImplementationOnce(() => promise);
+//   render(<App />);
+//   expect(screen.getByText(/Loading/)).toBeInTheDocument();
+//   await act(() => promise);
+//   expect(screen.queryByText(/Loading/)).toBeNull();
+//   expect(screen.getByText("React")).toBeInTheDocument();
+//   expect(screen.getByText("Redux")).toBeInTheDocument();
+//   expect(screen.getAllByRole("button").length).toBe(3);
+// });
+// test("fails fetching data", async () => {
+//   const promise = Promise.reject(new Error());
+//   axios.get.mockImplementationOnce(() => promise);
+//   render(<App />);
+//   expect(screen.getByText(/Loading/)).toBeInTheDocument();
+//   try {
+//     await act(() => promise);
+//   } catch (error) {
+//     expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
+//     expect(screen.queryByText(/Loading/)).toBeNull();
+//   }
+// });
+// test("removes a story", async () => {
+//   const promise = Promise.resolve({
+//     data: {
+//       hits: stories,
+//     },
+//   });
+//   axios.get.mockImplementationOnce(() => promise);
+//   render(<App />);
+//   await act(() => promise);
+//   expect(screen.getAllByRole("button").length).toBe(3);
+//   expect(screen.getByText("Jordan Walke")).toBeInTheDocument();
+//   fireEvent.click(screen.getAllByRole("button")[1]);
+//   expect(screen.getAllByRole("button").length).toBe(2);
+//   expect(screen.queryByText("Jordan Walke")).toBeNull();
+// });
+// test("searches for specific stories", async () => {
+//   const reactPromise = Promise.resolve({
+//     data: {
+//       hits: stories,
+//     },
+//   });
+//   const anotherStory = {
+//     title: "JavaScript",
+//     url: "https://en.wikipedia.org/wiki/JavaScript",
+//     author: "Brendan Eich",
+//     num_comments: 15,
+//     points: 10,
+//     objectID: 3,
+//   };
+//   const javascriptPromise = Promise.resolve({
+//     data: {
+//       hits: [anotherStory],
+//     },
+//   });
+//   axios.get.mockImplementation((url) => {
+//     if (url.includes("React")) {
+//       return reactPromise;
+//     }
+//     if (url.includes("JavaScript")) {
+//       return javascriptPromise;
+//     }
+//     throw Error();
+//   });
+//   // Initial render
+//   render(<App />);
+//   // First data fetching
+//   await act(() => reactPromise);
+//   expect(screen.getByDisplayValue("React")).toBeInTheDocument();
+//   expect(screen.queryByDisplayValue("JavaScript")).toBeNull();
+//   expect(screen.getByText("Jordan Walke")).toBeInTheDocument();
+//   expect(screen.getByText("Dan Abramvo, Andrew Clark")).toBeInTheDocument();
+//   expect(screen.queryByText("Brendan Eich")).toBeNull();
+//   // User interaction -> search
+//   fireEvent.change(screen.getByDisplayValue("React"), {
+//     target: {
+//       value: "JavaScript",
+//     },
+//   });
+//   expect(screen.queryByDisplayValue("React")).toBeNull();
+//   expect(screen.getByDisplayValue("JavaScript")).toBeInTheDocument();
+//   fireEvent.submit(screen.getAllByRole("button")[0]);
+//   // Second data fetching
+//   await act(() => javascriptPromise);
+//   expect(screen.queryByText("Jordan Walke")).toBeNull();
+//   expect(screen.queryByText("Dan Abramvo, Andrew Clark")).toBeNull();
+//   expect(screen.getByText("Brendan Eich")).toBeInTheDocument();
+// });
+// });

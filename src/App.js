@@ -31,7 +31,7 @@ const useSemiPersistentState = (key, initialState) => {
   return [value, setValue];
 };
 
-const storiesReducer = (state, action) => {
+export const storiesReducer = (state, action) => {
   switch (action.type) {
     case "STORIES_FETCH_INIT":
       return {
@@ -126,4 +126,3 @@ const App = () => {
 };
 
 export default App;
-export {storiesReducer};
