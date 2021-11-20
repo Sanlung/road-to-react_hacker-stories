@@ -2,7 +2,7 @@ import * as React from "react";
 import axios from "axios";
 import SearchForm from "./SearchForm";
 import List from "./List";
-import "./App.scss"
+import "./App.scss";
 
 // const StyledContainer = styled.div`
 //   height: 100vw;
@@ -31,7 +31,7 @@ const useSemiPersistentState = (key, initialState) => {
   return [value, setValue];
 };
 
-const storiesReducer = (state, action) => {
+export const storiesReducer = (state, action) => {
   switch (action.type) {
     case "STORIES_FETCH_INIT":
       return {
@@ -63,7 +63,6 @@ const storiesReducer = (state, action) => {
       throw new Error();
   }
 };
-
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
@@ -109,8 +108,8 @@ const App = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="headline-primary">My Hacker Stories</h1>
+    <div className='container'>
+      <h1 className='headline-primary'>My Hacker Stories</h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
