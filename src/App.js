@@ -76,8 +76,8 @@ const App = () => {
   const handleFetchStories = React.useCallback(async () => {
     dispatchStories({type: "STORIES_FETCH_INIT"});
 
-    const result = await axios.get(url);
     try {
+      const result = await axios.get(url);
       dispatchStories({
         type: "STORIES_FETCH_SUCCESS",
         payload: result.data.hits,
@@ -106,7 +106,6 @@ const App = () => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
     e.preventDefault();
   };
-
   return (
     <div className='container'>
       <h1 className='headline-primary'>My Hacker Stories</h1>
