@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-} from "@testing-library/react";
+import {render, screen, fireEvent, act} from "@testing-library/react";
 import App, {storiesReducer} from "./App";
 import SearchForm from "./SearchForm";
 import InputWithLabel from "./InputWithLabel";
@@ -43,191 +38,191 @@ Test suites
 */
 
 // For storiesReducer in App component
-// describe("storiesReducter", () => {
-//   test("remove a story from all stories", () => {
-//     const action = {type: "REMOVE_STORY", payload: storyOne};
-//     const state = {data: stories, isLoading: false, isError: false};
-//     const newState = storiesReducer(state, action);
-//     const expectedState = {data: [storyTwo], isLoading: false, isError: false};
-//     expect(newState).toStrictEqual(expectedState);
-//   });
+describe("storiesReducter", () => {
+  test("remove a story from all stories", () => {
+    const action = {type: "REMOVE_STORY", payload: storyOne};
+    const state = {data: stories, isLoading: false, isError: false};
+    const newState = storiesReducer(state, action);
+    const expectedState = {data: [storyTwo], isLoading: false, isError: false};
+    expect(newState).toStrictEqual(expectedState);
+  });
 
-//   test("fetch new stories", () => {
-//     const action = {type: "STORIES_FETCH_SUCCESS", payload: stories};
-//     const state = {data: [], isLoading: false, isError: false};
-//     const newState = storiesReducer(state, action);
-//     const expectedState = {
-//       data: [storyOne, storyTwo],
-//       isLoading: false,
-//       isError: false,
-//     };
-//     expect(newState).toStrictEqual(expectedState);
-//   });
+  test("fetch new stories", () => {
+    const action = {type: "STORIES_FETCH_SUCCESS", payload: stories};
+    const state = {data: [], isLoading: false, isError: false};
+    const newState = storiesReducer(state, action);
+    const expectedState = {
+      data: [storyOne, storyTwo],
+      isLoading: false,
+      isError: false,
+    };
+    expect(newState).toStrictEqual(expectedState);
+  });
 
-//   test("fetch new stories failed", () => {
-//     const action = {type: "STORIES_FETCH_FAILURE"};
-//     const state = {data: [], isLoading: false, isError: true};
-//     const newState = storiesReducer(state, action);
-//     const expectedState = {
-//       data: [],
-//       isLoading: false,
-//       isError: true,
-//     };
-//     expect(newState).toStrictEqual(expectedState);
-//   });
+  test("fetch new stories failed", () => {
+    const action = {type: "STORIES_FETCH_FAILURE"};
+    const state = {data: [], isLoading: false, isError: true};
+    const newState = storiesReducer(state, action);
+    const expectedState = {
+      data: [],
+      isLoading: false,
+      isError: true,
+    };
+    expect(newState).toStrictEqual(expectedState);
+  });
 
-//   test("fetch new stories pending", () => {
-//     const action = {type: "STORIES_FETCH_INIT"};
-//     const state = {data: [], isLoading: true, isError: false};
-//     const newState = storiesReducer(state, action);
-//     const expectedState = {
-//       data: [],
-//       isLoading: true,
-//       isError: false,
-//     };
-//     expect(newState).toStrictEqual(expectedState);
-//   });
-// });
+  test("fetch new stories pending", () => {
+    const action = {type: "STORIES_FETCH_INIT"};
+    const state = {data: [], isLoading: true, isError: false};
+    const newState = storiesReducer(state, action);
+    const expectedState = {
+      data: [],
+      isLoading: true,
+      isError: false,
+    };
+    expect(newState).toStrictEqual(expectedState);
+  });
+});
 
-// // For Item component
-// describe("Item", () => {
-//   test("renders all properties", () => {
-//     render(<Item item={storyOne} />);
-//     // screen.debug();
-//     expect(screen.getByText("Jordan Walke")).toBeInTheDocument();
-//     expect(screen.getByText("React")).toHaveAttribute(
-//       "href",
-//       "https://reactjs.org/"
-//     );
-//   });
+// For Item component
+describe("Item", () => {
+  test("renders all properties", () => {
+    render(<Item item={storyOne} />);
+    // screen.debug();
+    expect(screen.getByText("Jordan Walke")).toBeInTheDocument();
+    expect(screen.getByText("React")).toHaveAttribute(
+      "href",
+      "https://reactjs.org/"
+    );
+  });
 
-//   test("renders a clickable dismiss button", () => {
-//     render(<Item item={storyTwo} />);
+  test("renders a clickable dismiss button", () => {
+    render(<Item item={storyTwo} />);
 
-//     expect(screen.getByRole("button")).toBeInTheDocument();
-//   });
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
 
-//   test("clicking the dismiss button calls the callback handler", () => {
-//     const handleRemoveItem = jest.fn();
-//     render(<Item item={storyOne} onRemoveItem={handleRemoveItem} />);
-//     fireEvent.click(screen.getByRole("button"));
+  test("clicking the dismiss button calls the callback handler", () => {
+    const handleRemoveItem = jest.fn();
+    render(<Item item={storyOne} onRemoveItem={handleRemoveItem} />);
+    fireEvent.click(screen.getByRole("button"));
 
-//     expect(handleRemoveItem).toHaveBeenCalledTimes(1);
-//   });
-// });
+    expect(handleRemoveItem).toHaveBeenCalledTimes(1);
+  });
+});
 
 // For SearchForm component
-// describe("SearchForm", () => {
-//   const searchFormProps = {
-//     searchTerm: "React",
-//     onSearchInput: jest.fn(),
-//     onSearchSubmit: jest.fn(),
-//   };
-//   test("renders the input field with its value", () => {
-//     render(<SearchForm {...searchFormProps} />);
-//     screen.getByRole("");
-//     expect(screen.getByDisplayValue("React")).toBeInTheDocument();
-//   });
+describe("SearchForm", () => {
+  const searchFormProps = {
+    searchTerm: "React",
+    onSearchInput: jest.fn(),
+    onSearchSubmit: jest.fn(),
+  };
+  test("renders the input field with its value", () => {
+    render(<SearchForm {...searchFormProps} />);
 
-//   test("renders the correct label", () => {
-//     render(<SearchForm {...searchFormProps} />);
+    expect(screen.getByDisplayValue("React")).toBeInTheDocument();
+  });
 
-//     expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
-//   });
+  test("renders the correct label", () => {
+    render(<SearchForm {...searchFormProps} />);
 
-//   test("calls onSearchInput on search field change", () => {
-//     render(<SearchForm {...searchFormProps} />);
+    expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+  });
 
-//     fireEvent.change(screen.getByDisplayValue("React"), {
-//       target: {value: "Redux"},
-//     });
+  test("calls onSearchInput on search field change", () => {
+    render(<SearchForm {...searchFormProps} />);
 
-//     expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
-//   });
+    fireEvent.change(screen.getByDisplayValue("React"), {
+      target: {value: "Redux"},
+    });
 
-//   test("calls onSearchSubmit on submit button click", () => {
-//     render(<SearchForm {...searchFormProps} />);
+    expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
+  });
 
-//     fireEvent.submit(screen.getByRole("button"));
+  test("calls onSearchSubmit on submit button click", () => {
+    render(<SearchForm {...searchFormProps} />);
 
-//     expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
-//   });
+    fireEvent.submit(screen.getByRole("button"));
 
-// For snapshot
-// test("renders snapshot", () => {
-//   const {container} = render(<SearchForm {...searchFormProps} />);
-//   expect(container.firstChild).toMatchSnapshot();
-// });
-// });
+    expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
+  });
 
-// // For List component
-// describe("List", () => {
-//   const listProps = {
-//     list: stories,
-//     onRemoveItem: jest.fn(),
-//   };
+  // For snapshot
+  test("renders snapshot", () => {
+    const {container} = render(<SearchForm {...searchFormProps} />);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});
 
-//   test("contains an array of items", () => {
-//     render(<List {...listProps} />);
+// For List component
+describe("List", () => {
+  const listProps = {
+    list: stories,
+    onRemoveItem: jest.fn(),
+  };
 
-//     expect(listProps.list).toBeInstanceOf(Array);
-//   });
+  test("contains an array of items", () => {
+    render(<List {...listProps} />);
 
-//   test("renders all list items", () => {
-//     render(<List {...listProps} />);
+    expect(listProps.list).toBeInstanceOf(Array);
+  });
 
-//     expect(listProps.list).toContain(storyOne);
-//     expect(listProps.list).toContain(storyTwo);
-//   });
+  test("renders all list items", () => {
+    render(<List {...listProps} />);
 
-//   test("calls onRemoveItem on remove button click", () => {
-//     render(<List {...listProps} />);
+    expect(listProps.list).toContain(storyOne);
+    expect(listProps.list).toContain(storyTwo);
+  });
 
-//     fireEvent.click(screen.getAllByRole("button")[0]);
-//     fireEvent.click(screen.getAllByRole("button")[1]);
+  test("calls onRemoveItem on remove button click", () => {
+    render(<List {...listProps} />);
 
-//     expect(listProps.onRemoveItem).toBeCalledTimes(2);
-//   });
-// });
+    fireEvent.click(screen.getAllByRole("button")[0]);
+    fireEvent.click(screen.getAllByRole("button")[1]);
 
-// // For InputWithLabel component
-// describe("InputWithLabel", () => {
-//   const inputWithLabelProps = {
-//     id: "search",
-//     value: "React",
-//     isFocused: true,
-//     children: "Search:",
-//     onInputChange: jest.fn(),
-//   };
+    expect(listProps.onRemoveItem).toBeCalledTimes(2);
+  });
+});
 
-//   test("renders the input field with its value", () => {
-//     render(<InputWithLabel {...inputWithLabelProps} />);
+// For InputWithLabel component
+describe("InputWithLabel", () => {
+  const inputWithLabelProps = {
+    id: "search",
+    value: "React",
+    isFocused: true,
+    children: "Search:",
+    onInputChange: jest.fn(),
+  };
 
-//     expect(screen.getByDisplayValue("React")).toBeInTheDocument();
-//   });
+  test("renders the input field with its value", () => {
+    render(<InputWithLabel {...inputWithLabelProps} />);
 
-//   test("renders the correct label", () => {
-//     render(<InputWithLabel {...inputWithLabelProps} />);
+    expect(screen.getByDisplayValue("React")).toBeInTheDocument();
+  });
 
-//     expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
-//   });
+  test("renders the correct label", () => {
+    render(<InputWithLabel {...inputWithLabelProps} />);
 
-//   test("has a focused input field", () => {
-//     render(<InputWithLabel {...inputWithLabelProps} />);
+    expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+  });
 
-//     expect(screen.getByDisplayValue("React").focus).toBeTruthy();
-//   });
+  test("has a focused input field", () => {
+    render(<InputWithLabel {...inputWithLabelProps} />);
 
-//   test("calls onInputChange on search field change", () => {
-//     render(<InputWithLabel {...inputWithLabelProps} />);
+    expect(screen.getByDisplayValue("React").focus).toBeTruthy();
+  });
 
-//     fireEvent.change(screen.getByDisplayValue("React"), {
-//       target: {value: "Redux"},
-//     });
+  test("calls onInputChange on search field change", () => {
+    render(<InputWithLabel {...inputWithLabelProps} />);
 
-//     expect(inputWithLabelProps.onInputChange).toHaveBeenCalledTimes(1);
-//   });
-// });
+    fireEvent.change(screen.getByDisplayValue("React"), {
+      target: {value: "Redux"},
+    });
+
+    expect(inputWithLabelProps.onInputChange).toHaveBeenCalledTimes(1);
+  });
+});
 
 // For App and REST API
 describe("App", () => {
@@ -299,7 +294,7 @@ describe("App", () => {
       if (url.includes("JavaScript")) {
         return javascriptPromise;
       }
-      throw Error();
+      throw new Error();
     });
     // Initial render
     render(<App />);
