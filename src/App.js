@@ -1,7 +1,10 @@
 import * as React from "react";
 import axios from "axios";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faForward} from "@fortawesome/free-solid-svg-icons";
 import SearchForm from "./SearchForm";
 import List from "./List";
+import LastSearches from "./LastSearches";
 import "./App.scss";
 
 // const StyledContainer = styled.div`
@@ -17,8 +20,6 @@ import "./App.scss";
 //   font-weight: 300;
 //   letter-spacing: 2px;
 // `;
-
-const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const useSemiPersistentState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -44,7 +45,11 @@ export const storiesReducer = (state, action) => {
         ...state,
         isLoading: false,
         isError: false,
-        data: action.payload,
+        data:
+          action.payload.page === 0
+            ? action.payload.list
+            : state.data.concat(action.payload.list),
+        page: action.payload.page,
       };
     case "STORIES_FETCH_FAILURE":
       return {
@@ -64,11 +69,34 @@ export const storiesReducer = (state, action) => {
   }
 };
 
+const API_BASE = "https://hn.algolia.com/api/v1";
+const API_SEARCH = "/search";
+const PARAM_SEARCH = "query=";
+const PARAM_PAGE = "page=";
+
+const extractSearchTerm = (url) =>
+  url
+    .substring(url.lastIndexOf("?") + 1, url.lastIndexOf("&"))
+    .replace(PARAM_SEARCH, "");
+
+const getLastSearches = (urls) =>
+  urls
+    .reduce((accm, cur) => {
+      const searchTerm = extractSearchTerm(cur);
+      if (accm.includes(searchTerm)) return accm;
+      return accm.concat(searchTerm);
+    }, [])
+    .slice(-6, -1);
+
+const getUrl = (searchTerm, page) =>
+  `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`;
+
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
-  const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
+  const [urls, setUrls] = React.useState([getUrl(searchTerm, 0)]);
   const [stories, dispatchStories] = React.useReducer(storiesReducer, {
     data: [],
+    page: 0,
     isLoading: false,
     isError: false,
   });
@@ -77,15 +105,19 @@ const App = () => {
     dispatchStories({type: "STORIES_FETCH_INIT"});
 
     try {
-      const result = await axios.get(url);
+      const lastUrl = urls[urls.length - 1];
+      const result = await axios.get(lastUrl);
       dispatchStories({
         type: "STORIES_FETCH_SUCCESS",
-        payload: result.data.hits,
+        payload: {
+          list: result.data.hits,
+          page: result.data.page,
+        },
       });
     } catch {
       dispatchStories({type: "STORIES_FETCH_FAILURE"});
     }
-  }, [url]);
+  }, [urls]);
 
   React.useEffect(() => {
     handleFetchStories();
@@ -102,10 +134,29 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleSearch = (searchTerm, page) => {
+    const url = getUrl(searchTerm, page);
+    setUrls([...urls, url]);
+  };
+
+  const handleMore = () => {
+    const lastUrl = urls[urls.length - 1];
+    const searchTerm = extractSearchTerm(lastUrl);
+    handleSearch(searchTerm, stories.page + 1);
+  };
+
   const handleSearchSubmit = (e) => {
-    setUrl(`${API_ENDPOINT}${searchTerm}`);
+    handleSearch(searchTerm, 0);
     e.preventDefault();
   };
+
+  const handleLastSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    handleSearch(searchTerm, 0);
+  };
+
+  const lastSearches = getLastSearches(urls);
+
   return (
     <div className='container'>
       <h1 className='headline-primary'>My Hacker Stories</h1>
@@ -114,11 +165,23 @@ const App = () => {
         onSearchInput={handleSearchInput}
         onSearchSubmit={handleSearchSubmit}
       />
-      {stories.isError && <p>Something went wrong ...</p>}
+      <LastSearches
+        lastSearches={lastSearches}
+        onLastSearch={handleLastSearch}
+      />
+      <List list={stories.data} onRemoveItem={handleRemoveStory} />
       {stories.isLoading ? (
         <p>Loading ...</p>
+      ) : stories.isError ? (
+        <p>Something went wrong ...</p>
       ) : (
-        <List list={stories.data} onRemoveItem={handleRemoveStory} />
+        <button
+          type='button'
+          className='button button_large button_more'
+          onClick={handleMore}>
+          More&nbsp;
+          <FontAwesomeIcon icon={faForward} />
+        </button>
       )}
     </div>
   );
