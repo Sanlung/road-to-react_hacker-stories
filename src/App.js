@@ -74,6 +74,9 @@ const API_SEARCH = "/search";
 const PARAM_SEARCH = "query=";
 const PARAM_PAGE = "page=";
 
+const getUrl = (searchTerm, page) =>
+  `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`;
+
 const extractSearchTerm = (url) =>
   url
     .substring(url.lastIndexOf("?") + 1, url.lastIndexOf("&"))
@@ -87,9 +90,6 @@ const getLastSearches = (urls) =>
       return accm.concat(searchTerm);
     }, [])
     .slice(-6, -1);
-
-const getUrl = (searchTerm, page) =>
-  `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`;
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
@@ -134,6 +134,16 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleSearchSubmit = (e) => {
+    handleSearch(searchTerm, 0);
+    e.preventDefault();
+  };
+
+  const handleLastSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    handleSearch(searchTerm, 0);
+  };
+
   const handleSearch = (searchTerm, page) => {
     const url = getUrl(searchTerm, page);
     setUrls([...urls, url]);
@@ -143,16 +153,6 @@ const App = () => {
     const lastUrl = urls[urls.length - 1];
     const searchTerm = extractSearchTerm(lastUrl);
     handleSearch(searchTerm, stories.page + 1);
-  };
-
-  const handleSearchSubmit = (e) => {
-    handleSearch(searchTerm, 0);
-    e.preventDefault();
-  };
-
-  const handleLastSearch = (searchTerm) => {
-    setSearchTerm(searchTerm);
-    handleSearch(searchTerm, 0);
   };
 
   const lastSearches = getLastSearches(urls);

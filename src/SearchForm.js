@@ -21,7 +21,7 @@ import {faPaperPlane} from "@fortawesome/free-solid-svg-icons";
 //   align-items: baseline;
 // `;
 
-const SearchForm = ({searchTerm, onSearchInput, onSearchSubmit, children}) => (
+const SearchForm = ({searchTerm, onSearchInput, onSearchSubmit}) => (
   <form className='search-form' onSubmit={onSearchSubmit}>
     <InputWithLabel
       id='search'
